@@ -1263,8 +1263,9 @@
 
     function renderLayoutLibrary() {
       layoutContainer.innerHTML = '';
-      layoutContainer.style.gridTemplateColumns = `repeat(${libraryState.cols}, minmax(0, 1fr))`;
-      layoutContainer.style.width = '100%';
+      layoutContainer.style.gridTemplateColumns = `repeat(${libraryState.cols}, minmax(max-content, 1fr))`;
+      layoutContainer.style.width = 'max-content';
+      layoutContainer.style.minWidth = '100%';
 
       libraryState.shelves.forEach((shelfData, index) => {
         const shelfEl = document.createElement('div');
@@ -1536,8 +1537,9 @@
     }
 
     function renderFinalLibrary() {
-      finalContainer.style.gridTemplateColumns = `repeat(${libraryState.cols}, minmax(0, 1fr))`;
-      finalContainer.style.width = '100%';
+      finalContainer.style.gridTemplateColumns = `repeat(${libraryState.cols}, minmax(max-content, 1fr))`;
+      finalContainer.style.width = 'max-content';
+      finalContainer.style.minWidth = '100%';
       finalContainer.innerHTML = '';
       
       libraryState.shelves.forEach((shelfData) => {
