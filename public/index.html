@@ -110,6 +110,28 @@
       transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
     }
 
+    /* Shelf Container & Canvas Pan Styling */
+    .shelf-bg {
+      overflow-x: auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(217, 119, 6, 0.4) rgba(0, 0, 0, 0.2);
+    }
+    .shelf-bg::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    .shelf-bg::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+    .shelf-bg::-webkit-scrollbar-thumb {
+      background: rgba(217, 119, 6, 0.4);
+      border-radius: 4px;
+    }
+
     /* Shelf Styling */
     .shelf {
       background-color: #5c3a18;
@@ -119,12 +141,14 @@
       box-shadow: inset 0 -12px 14px rgba(0,0,0,0.5), 0 6px 10px rgba(0,0,0,0.4);
       position: relative;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: wrap-reverse;
       align-items: flex-end;
+      align-content: flex-end;
       padding: 10px;
       gap: 3px;
       min-height: 135px;
       width: 100%;
+      min-width: max-content;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s, background-color 0.4s, border-color 0.4s;
     }
@@ -173,10 +197,12 @@
 
     /* Vertical Books */
     .book.vertical {
-      width: 22px;
+      width: 24px;
+      min-width: 24px;
       height: 100px;
       flex-direction: column;
       flex-shrink: 0;
+      align-self: flex-end;
     }
     
     .book.vertical .book-title {
@@ -188,15 +214,20 @@
 
     /* Horizontal Books Stack */
     .book-stack {
-      display: flex;
+      display: inline-flex;
       flex-direction: column-reverse;
       justify-content: flex-start;
+      align-self: flex-end;
       gap: 3px;
+      flex-shrink: 0;
     }
 
     .book.horizontal {
-      width: 100px;
+      width: 105px;
+      min-width: 105px;
       height: 22px;
+      flex-shrink: 0;
+      align-self: flex-end;
     }
 
     .book.horizontal .book-title {
@@ -225,13 +256,15 @@
       z-index: 2;
     }
     .book.cd-case.vertical {
-      width: 26px !important;
+      width: 28px !important;
+      min-width: 28px !important;
       height: 88px !important;
       padding: 4px 0 !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: center !important;
       flex-shrink: 0;
+      align-self: flex-end;
     }
     .book.cd-case.vertical .book-title {
       transform: rotate(-90deg);
@@ -244,12 +277,15 @@
       font-size: 0.68rem;
     }
     .book.cd-case.horizontal {
-      width: 95px !important;
+      width: 98px !important;
+      min-width: 98px !important;
       height: 22px !important;
       padding: 0 4px !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
+      flex-shrink: 0;
+      align-self: flex-end;
     }
     .book.cd-case.horizontal .book-title {
       width: 100%;
