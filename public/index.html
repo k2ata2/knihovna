@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Knihovna — Ahoj čtenáři!</title>
-  <meta name="description" content="Vítejte v tradiční i digitální knihovně na doméně knihovna.k2ata.cz.">
+  <title>Moje Virtuální Knihovna — knihovna.k2ata.cz</title>
+  <meta name="description" content="Vytvoř si svoji vlastní digitální knihovnu, přidej své knihy a zaznamenávej si přečtené tituly.">
   
-  <!-- Google Fonts: Playfair Display + Plus Jakarta Sans -->
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
       --wood-dark: #120a07;
-      --wood-base: #1c100b;
-      --wood-card: rgba(36, 20, 14, 0.75);
-      --wood-border: rgba(217, 119, 6, 0.22);
+      --wood-card: rgba(36, 20, 14, 0.85);
+      --wood-border: rgba(217, 119, 6, 0.25);
       --gold-accent: #f59e0b;
       --gold-light: #fbbf24;
       --gold-warm: #d97706;
@@ -42,33 +42,37 @@
       color: var(--text-warm-body);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
       position: relative;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
 
-    /* Ambient Warm Fireplace / Lamp Light Glows */
+    /* Ambient Warm Lights */
     .glow-light {
-      position: absolute;
+      position: fixed;
       border-radius: 50%;
       filter: blur(100px);
       opacity: 0.35;
       pointer-events: none;
       animation: warmPulse 10s ease-in-out infinite alternate;
+      z-index: 0;
+      transition: background 0.5s ease;
     }
 
     .glow-light-1 {
-      width: 480px;
-      height: 480px;
+      width: 500px;
+      height: 500px;
       background: radial-gradient(circle, #b45309, transparent 70%);
       top: -120px;
       left: 10%;
     }
 
     .glow-light-2 {
-      width: 420px;
-      height: 420px;
+      width: 450px;
+      height: 450px;
       background: radial-gradient(circle, #78350f, transparent 70%);
       bottom: -100px;
       right: 15%;
@@ -80,24 +84,20 @@
       100% { transform: scale(1.12) translateY(20px); opacity: 0.45; }
     }
 
-    /* Wooden Shelf Line background pattern */
     .wood-lines {
-      position: absolute;
+      position: fixed;
       inset: 0;
       background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.2) 1px, transparent 1px);
       background-size: 100% 48px;
       opacity: 0.4;
       pointer-events: none;
+      z-index: 0;
     }
 
-    /* Main Container (Wooden Panel Frame) */
-    .container {
+    /* Glassmorphic Container */
+    .wooden-card {
       position: relative;
       z-index: 10;
-      width: 90%;
-      max-width: 650px;
-      padding: 3rem 2.5rem;
-      border-radius: 20px;
       background: var(--wood-card);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
@@ -106,60 +106,270 @@
         0 25px 60px -15px rgba(0, 0, 0, 0.8),
         inset 0 1px 1px rgba(254, 243, 199, 0.15),
         0 0 40px rgba(180, 83, 9, 0.12);
-      text-align: center;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+      border-radius: 20px;
+      transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
     }
 
-    .container::before {
-      content: '';
-      position: absolute;
-      inset: 8px;
-      border-radius: 14px;
-      border: 1px solid rgba(217, 119, 6, 0.15);
+    /* Shelf Styling */
+    .shelf {
+      background-color: #5c3a18;
+      border-bottom: 10px solid #3d240d;
+      border-left: 4px solid #4a2d10;
+      border-right: 4px solid #4a2d10;
+      box-shadow: inset 0 -12px 14px rgba(0,0,0,0.5), 0 6px 10px rgba(0,0,0,0.4);
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      padding: 10px;
+      gap: 6px;
+      min-height: 135px;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background-color 0.4s, border-color 0.4s;
+    }
+
+    .shelf:hover {
+      box-shadow: inset 0 -12px 14px rgba(0,0,0,0.5), 0 8px 20px rgba(217, 119, 6, 0.3);
+    }
+
+    .shelf.active {
+      outline: 3px solid var(--gold-light);
+      outline-offset: -3px;
+    }
+
+    /* Book Styling */
+    .book {
+      border: 1px solid rgba(0,0,0,0.3);
+      border-radius: 2px 4px 4px 2px;
+      box-shadow: inset 4px 0 10px rgba(255,255,255,0.25), inset -2px 0 5px rgba(0,0,0,0.3), 2px 2px 6px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+      position: relative;
+      background-color: #6b7280;
+      overflow: hidden;
+    }
+    
+    .book:hover {
+      transform: translateY(-6px);
+      box-shadow: inset 4px 0 10px rgba(255,255,255,0.3), inset -2px 0 5px rgba(0,0,0,0.3), 4px 8px 12px rgba(0,0,0,0.5);
+    }
+
+    /* Title on Book Spine */
+    .book-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #f3f4f6;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 4px;
       pointer-events: none;
     }
 
-    .container:hover {
-      transform: translateY(-5px);
-      box-shadow: 
-        0 35px 75px -15px rgba(0, 0, 0, 0.9),
-        inset 0 1px 2px rgba(254, 243, 199, 0.25),
-        0 0 50px rgba(245, 158, 11, 0.2);
+    /* Vertical Books */
+    .book.vertical {
+      width: 24px;
+      height: 100px;
+      flex-direction: column;
+    }
+    
+    .book.vertical .book-title {
+      transform: rotate(-90deg);
+      transform-origin: center;
+      width: 90px;
+      text-align: center;
     }
 
-    /* Golden Emblem / Book Icon */
-    .emblem {
-      display: inline-flex;
+    /* Horizontal Books Stack */
+    .book-stack {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+      gap: 3px;
+    }
+
+    .book.horizontal {
+      width: 100px;
+      height: 22px;
+    }
+
+    .book.horizontal .book-title {
+      width: 100%;
+      text-align: center;
+    }
+
+    /* CD / Audiobook styling */
+    .book.cd-case {
+      border: 2px solid rgba(255, 255, 255, 0.55) !important;
+      border-radius: 4px;
+      box-shadow: 
+        inset 0 0 8px rgba(255, 255, 255, 0.45),
+        inset -3px 0 5px rgba(0, 0, 0, 0.4),
+        2px 4px 10px rgba(0, 0, 0, 0.35) !important;
+      background-color: #475569;
+      position: relative;
+      overflow: hidden;
+    }
+    .book.cd-case::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(0, 0, 0, 0.25) 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .book.cd-case.vertical {
+      width: 32px !important;
+      height: 88px !important;
+      padding: 4px 0 !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .book.cd-case.vertical .book-title {
+      transform: rotate(-90deg);
+      transform-origin: center;
+      width: 78px;
+      text-align: center !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 0.68rem;
+    }
+    .book.cd-case.horizontal {
+      width: 95px !important;
+      height: 22px !important;
+      padding: 0 4px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .book.cd-case.horizontal .book-title {
+      width: 100%;
+      text-align: center !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .book.cd-case .audio-badge {
+      font-size: 9px;
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(15, 23, 42, 0.85);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      border-radius: 50%;
+      width: 15px;
+      height: 15px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      width: 80px;
-      height: 80px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+
+
+    /* Read / Listened Badge */
+    .book .read-badge {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      background: #10b981;
+      color: #ffffff;
       border-radius: 50%;
-      background: linear-gradient(145deg, #2a170e, #140b07);
-      border: 2px solid rgba(245, 158, 11, 0.4);
-      margin-bottom: 1.5rem;
-      color: var(--gold-light);
-      box-shadow: 
-        0 10px 25px rgba(0, 0, 0, 0.6),
-        0 0 20px rgba(217, 119, 6, 0.25),
-        inset 0 2px 4px rgba(254, 243, 199, 0.2);
-      position: relative;
+      width: 14px;
+      height: 14px;
+      font-size: 9px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
+      z-index: 4;
+      pointer-events: none;
     }
 
-    .emblem svg {
-      width: 40px;
-      height: 40px;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    /* Star Rating */
+    .star-rating-container {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .star-btn {
+      font-size: 1.25rem;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: transform 0.15s, opacity 0.15s;
+      background: none;
+      border: none;
+      padding: 0 2px;
+    }
+    .star-btn:hover, .star-btn.active {
+      opacity: 1;
+      transform: scale(1.15);
     }
 
-    /* Elegant Badge */
-    .badge {
+    /* Fade-in Animation */
+    .fade-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Color Picker Buttons */
+    .color-picker-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .color-picker-btn:hover {
+      transform: scale(1.15);
+    }
+    .color-picker-btn.selected {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 0 2px #1f2937, 0 0 0 4px var(--gold-light);
+    }
+
+    /* Typography Spacing Rules */
+    h1.heading-serif {
+      font-family: 'Playfair Display', serif;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      word-spacing: 0.15em;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    p.description-spaced {
+      font-size: 1.15rem;
+      color: var(--text-warm-body);
+      line-height: 1.85;
+      word-spacing: 0.14em;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 6px 18px;
       border-radius: 100px;
-      background: rgba(180, 83, 9, 0.2);
+      background: rgba(180, 83, 9, 0.25);
       border: 1px solid rgba(245, 158, 11, 0.3);
       color: var(--gold-light);
       font-family: 'Cormorant Garamond', serif;
@@ -167,137 +377,1435 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
     }
 
-    .badge-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background-color: var(--gold-light);
-      box-shadow: 0 0 10px var(--gold-light);
-      animation: pulse 2.5s infinite;
-    }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
+    /* ==========================================================================
+       THEME OVERRIDES (Dřevěný, Světlý, Tmavý, Futuristický, Královský Smaragd)
+       ========================================================================== */
 
-    /* Heading in Serif Classical Style */
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3.4rem;
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.01em;
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 1.1rem;
-      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    /* 1. DŘEVĚNÝ (Wood Theme - Default) */
+    body.theme-wood {
+      background-color: #120a07;
     }
+    body.theme-wood .shelf-bg { background-color: #2b180a; }
 
-    /* Subheading / Description */
-    p.description {
-      font-size: 1.125rem;
-      color: var(--text-warm-body);
-      line-height: 1.7;
-      font-weight: 400;
-      max-width: 500px;
-      margin: 0 auto 2.25rem;
+    /* 2. SVĚTLÝ (Modern Light Theme) */
+    body.theme-light {
+      background-color: #f8fafc !important;
+      background-image: radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.12) 0%, transparent 60%) !important;
+      color: #0f172a !important;
     }
+    body.theme-light .wooden-card {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border: 1px solid rgba(203, 213, 225, 0.9) !important;
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.08) !important;
+      color: #0f172a !important;
+    }
+    body.theme-light #main-header {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+    }
+    body.theme-light h1.heading-serif, body.theme-light h2.heading-serif, body.theme-light h3 {
+      background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      text-shadow: none !important;
+    }
+    body.theme-light p.description-spaced, body.theme-light p {
+      color: #334155 !important;
+    }
+    body.theme-light .badge-tag {
+      background: #dbeafe !important;
+      border: 1px solid #93c5fd !important;
+      color: #1e40af !important;
+    }
+    body.theme-light .badge-tag span {
+      background-color: #2563eb !important;
+      box-shadow: 0 0 8px #2563eb !important;
+    }
+    body.theme-light .text-amber-400, 
+    body.theme-light .text-amber-300 {
+      color: #2563eb !important;
+    }
+    body.theme-light .text-amber-100, 
+    body.theme-light .text-amber-200 {
+      color: #0f172a !important;
+    }
+    body.theme-light .text-amber-200\/40,
+    body.theme-light .text-amber-200\/50,
+    body.theme-light .text-amber-200\/60, 
+    body.theme-light .text-amber-200\/70, 
+    body.theme-light .text-amber-200\/80, 
+    body.theme-light .text-amber-200\/90 {
+      color: #475569 !important;
+    }
+    body.theme-light .bg-stone-900,
+    body.theme-light .bg-stone-950\/50,
+    body.theme-light .bg-stone-950\/60,
+    body.theme-light .bg-stone-950\/80,
+    body.theme-light .bg-stone-950\/85 {
+      background-color: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    body.theme-light input[type="text"],
+    body.theme-light input[type="number"] {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    body.theme-light input::placeholder {
+      color: #94a3b8 !important;
+    }
+    body.theme-light label {
+      color: #334155 !important;
+    }
+    body.theme-light .shelf {
+      background-color: #cbd5e1 !important;
+      border-bottom: 10px solid #94a3b8 !important;
+      border-left: 4px solid #94a3b8 !important;
+      border-right: 4px solid #94a3b8 !important;
+      box-shadow: inset 0 -8px 10px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.05) !important;
+    }
+    body.theme-light .shelf-bg { background-color: #f8fafc !important; }
+    body.theme-light .glow-light-1 { background: radial-gradient(circle, #60a5fa, transparent 70%) !important; }
+    body.theme-light .glow-light-2 { background: radial-gradient(circle, #cbd5e1, transparent 70%) !important; }
 
-    p.description span {
-      color: var(--text-warm-light);
-      font-weight: 600;
+    /* 3. TMAVÝ (Sleek Dark Theme) */
+    body.theme-dark {
+      background-color: #0b0f19 !important;
+      background-image: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 60%) !important;
+      color: #f1f5f9 !important;
     }
+    body.theme-dark .wooden-card {
+      background: rgba(15, 23, 42, 0.88) !important;
+      border: 1px solid rgba(99, 102, 241, 0.3) !important;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 35px rgba(99, 102, 241, 0.15) !important;
+    }
+    body.theme-dark h1.heading-serif, body.theme-dark h2.heading-serif {
+      background: linear-gradient(135deg, #ffffff 0%, #818cf8 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      text-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+    }
+    body.theme-dark p.description-spaced { color: #cbd5e1 !important; }
+    body.theme-dark .shelf {
+      background-color: #1e293b !important;
+      border-bottom: 10px solid #0f172a !important;
+      border-left: 4px solid #0f172a !important;
+      border-right: 4px solid #0f172a !important;
+      box-shadow: inset 0 -10px 12px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.5) !important;
+    }
+    body.theme-dark .shelf-bg { background-color: #020617 !important; }
+    body.theme-dark .glow-light-1 { background: radial-gradient(circle, #6366f1, transparent 70%) !important; }
+    body.theme-dark .glow-light-2 { background: radial-gradient(circle, #3b82f6, transparent 70%) !important; }
 
-    /* Divider Ornamental Line */
-    .divider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 2rem;
-      opacity: 0.6;
+    /* 4. FUTURISTICKÝ (Neon Cyberpunk Theme) */
+    body.theme-future {
+      background-color: #050811 !important;
+      background-image: 
+        radial-gradient(circle at 30% 20%, rgba(0, 243, 255, 0.18) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 127, 0.18) 0%, transparent 50%) !important;
+      color: #e2e8f0 !important;
     }
+    body.theme-future .wooden-card {
+      background: rgba(10, 15, 30, 0.92) !important;
+      border: 1px solid rgba(0, 243, 255, 0.45) !important;
+      box-shadow: 0 0 30px rgba(0, 243, 255, 0.3), inset 0 0 15px rgba(255, 0, 127, 0.2) !important;
+    }
+    body.theme-future h1.heading-serif, body.theme-future h2.heading-serif {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      background: linear-gradient(135deg, #00f3ff 0%, #ff007f 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      text-shadow: 0 0 15px rgba(0, 243, 255, 0.6) !important;
+    }
+    body.theme-future .shelf {
+      background-color: #0d1527 !important;
+      border-bottom: 10px solid #00f3ff !important;
+      border-left: 4px solid #ff007f !important;
+      border-right: 4px solid #ff007f !important;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), inset 0 -5px 10px rgba(255, 0, 127, 0.3) !important;
+    }
+    body.theme-future .shelf-bg { background-color: #030712 !important; }
+    body.theme-future .glow-light-1 { background: radial-gradient(circle, #00f3ff, transparent 70%) !important; }
+    body.theme-future .glow-light-2 { background: radial-gradient(circle, #ff007f, transparent 70%) !important; }
 
-    .divider-line {
-      height: 1px;
-      width: 60px;
-      background: linear-gradient(90deg, transparent, var(--gold-warm), transparent);
+    /* 5. KRÁLOVSKÝ (Royal Emerald Theme) */
+    body.theme-emerald {
+      background-color: #031410 !important;
+      background-image: radial-gradient(circle at 50% 20%, rgba(16, 185, 129, 0.2) 0%, transparent 60%) !important;
+      color: #ecfdf5 !important;
     }
+    body.theme-emerald .wooden-card {
+      background: rgba(6, 44, 36, 0.88) !important;
+      border: 1px solid rgba(52, 211, 153, 0.35) !important;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(16, 185, 129, 0.2) !important;
+    }
+    body.theme-emerald h1.heading-serif, body.theme-emerald h2.heading-serif {
+      background: linear-gradient(135deg, #a7f3d0 0%, #34d399 50%, #f59e0b 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+    body.theme-emerald .shelf {
+      background-color: #064e3b !important;
+      border-bottom: 10px solid #022c22 !important;
+      border-left: 4px solid #022c22 !important;
+      border-right: 4px solid #022c22 !important;
+      box-shadow: inset 0 -10px 12px rgba(0,0,0,0.6), 0 4px 8px rgba(0,0,0,0.4) !important;
+    }
+    body.theme-emerald .shelf-bg { background-color: #022c22 !important; }
+    body.theme-emerald .glow-light-1 { background: radial-gradient(circle, #10b981, transparent 70%) !important; }
+    body.theme-emerald .glow-light-2 { background: radial-gradient(circle, #047857, transparent 70%) !important; }
 
-    .divider-diamond {
-      width: 6px;
-      height: 6px;
-      background-color: var(--gold-light);
-      transform: rotate(45deg);
+    /* 6. SVĚTLÉ DŘEVO (Natural Light Brown / Birch / Ash Wood Theme) */
+    body.theme-oak {
+      background-color: #f7f4ef !important;
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(165, 145, 125, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(145, 125, 105, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(130, 110, 90, 0.08) 0%, transparent 50%) !important;
+      color: #362a20 !important;
     }
+    body.theme-oak .wooden-card {
+      background: rgba(253, 250, 246, 0.96) !important;
+      border: 1px solid rgba(195, 180, 162, 0.5) !important;
+      box-shadow: 0 20px 45px -10px rgba(60, 45, 35, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
+      color: #362a20 !important;
+    }
+    body.theme-oak #main-header {
+      background: rgba(253, 250, 246, 0.96) !important;
+      border-color: rgba(195, 180, 162, 0.45) !important;
+      color: #362a20 !important;
+      box-shadow: 0 4px 15px rgba(60, 45, 35, 0.06) !important;
+    }
+    body.theme-oak h1.heading-serif, body.theme-oak h2.heading-serif, body.theme-oak h3 {
+      background: linear-gradient(135deg, #2c2017 0%, #6e5847 70%, #443326 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      text-shadow: none !important;
+    }
+    body.theme-oak p.description-spaced, body.theme-oak p {
+      color: #57473a !important;
+    }
+    body.theme-oak .badge-tag {
+      background: #ede5da !important;
+      border: 1px solid #c0b09d !important;
+      color: #4a3a2c !important;
+    }
+    body.theme-oak .badge-tag span {
+      background-color: #7a6654 !important;
+      box-shadow: 0 0 8px #7a6654 !important;
+    }
+    body.theme-oak .text-amber-400, 
+    body.theme-oak .text-amber-300 {
+      color: #705948 !important;
+    }
+    body.theme-oak .text-amber-100, 
+    body.theme-oak .text-amber-200 {
+      color: #362a20 !important;
+    }
+    body.theme-oak .text-amber-200\/40,
+    body.theme-oak .text-amber-200\/50,
+    body.theme-oak .text-amber-200\/60, 
+    body.theme-oak .text-amber-200\/70, 
+    body.theme-oak .text-amber-200\/80, 
+    body.theme-oak .text-amber-200\/90 {
+      color: #635041 !important;
+    }
+    body.theme-oak .bg-stone-900,
+    body.theme-oak .bg-stone-950\/50,
+    body.theme-oak .bg-stone-950\/60,
+    body.theme-oak .bg-stone-950\/80,
+    body.theme-oak .bg-stone-950\/85 {
+      background-color: #f4efe6 !important;
+      border-color: #e0d5c6 !important;
+      color: #362a20 !important;
+    }
+    body.theme-oak input[type="text"],
+    body.theme-oak input[type="number"] {
+      background-color: #ffffff !important;
+      border-color: #c0b09d !important;
+      color: #362a20 !important;
+    }
+    body.theme-oak input::placeholder {
+      color: #968472 !important;
+    }
+    body.theme-oak label {
+      color: #57473a !important;
+    }
+    body.theme-oak .shelf {
+      background-color: #d0c1b0 !important;
+      border-bottom: 10px solid #8a7866 !important;
+      border-left: 4px solid #b5a492 !important;
+      border-right: 4px solid #b5a492 !important;
+      box-shadow: inset 0 -8px 10px rgba(0,0,0,0.08), 0 4px 8px rgba(60,45,35,0.12) !important;
+    }
+    body.theme-oak .shelf-bg { background-color: #f4efe6 !important; }
+    body.theme-oak .glow-light-1 { background: radial-gradient(circle, #cbbca9, transparent 70%) !important; }
+    body.theme-oak .glow-light-2 { background: radial-gradient(circle, #f7f4ef, transparent 70%) !important; }
 
-    /* Domain Tag Box */
-    .domain-box {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      color: var(--text-warm-muted);
-      background: rgba(18, 10, 7, 0.6);
-      padding: 10px 22px;
-      border-radius: 12px;
-      border: 1px solid rgba(217, 119, 6, 0.25);
-      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
-    }
-
-    .domain-box span {
-      color: var(--gold-light);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-    }
   </style>
 </head>
-<body>
+<body class="theme-wood p-4 md:p-8">
 
-  <!-- Ambient Light Effects -->
+  <!-- Top Navigation Header Bar -->
+  <header id="main-header" class="w-full max-w-7xl mx-auto px-4 py-3 mb-6 z-10 flex flex-col sm:flex-row justify-between items-center gap-3 bg-stone-950/70 backdrop-blur-md rounded-2xl border border-amber-900/30 shadow-lg">
+    <div class="flex items-center gap-2.5 text-amber-100 font-bold text-xl md:text-2xl font-serif">
+      <span class="text-2xl">📚</span> Moje Virtuální Knihovna
+    </div>
+
+    <!-- Theme Switcher -->
+    <div id="theme-switcher-container" class="flex items-center gap-1.5 p-1 rounded-xl bg-stone-900/80 border border-amber-900/30">
+      <span class="text-xs text-amber-200/60 font-semibold px-2 hidden sm:inline">Vizuál:</span>
+      <button class="theme-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-amber-200 hover:bg-amber-900/40" data-theme="wood" title="Tmavé dřevo">
+        🪵 <span class="hidden md:inline">Tmavé dřevo</span>
+      </button>
+      <button class="theme-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-amber-300 hover:bg-amber-900/40" data-theme="oak" title="Světlé dřevo">
+        🌾 <span class="hidden md:inline">Světlé dřevo</span>
+      </button>
+      <button class="theme-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-slate-300 hover:bg-slate-800/40" data-theme="light" title="Světlý styl">
+        ☀️ <span class="hidden md:inline">Světlý</span>
+      </button>
+      <button class="theme-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-indigo-200 hover:bg-indigo-900/40" data-theme="dark" title="Tmavý styl">
+        🌙 <span class="hidden md:inline">Tmavý</span>
+      </button>
+      <button class="theme-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-cyan-300 hover:bg-cyan-900/40" data-theme="future" title="Futuristický styl">
+        ⚡ <span class="hidden md:inline">Future</span>
+      </button>
+      <button class="theme-btn px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1 text-emerald-300 hover:bg-emerald-900/40" data-theme="emerald" title="Královský smaragd">
+        👑 <span class="hidden md:inline">Smaragd</span>
+      </button>
+    </div>
+  </header>
+
   <div class="glow-light glow-light-1"></div>
   <div class="glow-light glow-light-2"></div>
   <div class="wood-lines"></div>
 
-  <!-- Main Wooden Library Card Container -->
-  <main class="container">
-    <div class="emblem">
-      <!-- Classic Open Book Icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <!-- LANDING PAGE CARD -->
+  <main id="page-landing" class="wooden-card fade-in flex flex-col items-center justify-center w-full max-w-2xl p-8 md:p-12 text-center my-auto">
+    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-stone-900/80 border-2 border-amber-500/40 mb-6 text-amber-400 shadow-xl">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-10 h-10">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
       </svg>
     </div>
 
-    <div class="badge">
-      <span class="badge-dot"></span>
-      Klasická & Digitální Knihovna
+    <h1 class="heading-serif text-5xl md:text-6xl lg:text-7xl font-bold mb-6">Moje Virtuální Knihovna</h1>
+
+    <div class="flex items-center justify-center gap-3 mb-6 opacity-60">
+      <div class="h-[1px] w-16 bg-gradient-to-r from-transparent via-amber-600 to-transparent"></div>
+      <div class="w-1.5 h-1.5 bg-amber-400 rotate-45"></div>
+      <div class="h-[1px] w-16 bg-gradient-to-r from-transparent via-amber-600 to-transparent"></div>
     </div>
 
-    <h1>Ahoj čtenáři!</h1>
-
-    <div class="divider">
-      <div class="divider-line"></div>
-      <div class="divider-diamond"></div>
-      <div class="divider-line"></div>
-    </div>
-
-    <p class="description">
-      Vítejte v útulném zákoutí naší knihovny. Tato nová stránka v elegantním dřevěném stylu je připravena pro vaše knižní příběhy a nápady.
+    <p class="description-spaced max-w-xl mx-auto mb-8">
+      Vytvoř si vlastní digitální knihovnu a zaznamenávej si přečtené knihy i audioknihy.
     </p>
 
-    <div class="domain-box">
-      Doména: <span>knihovna.k2ata.cz</span>
+    <!-- Buttons Symmetrically Aligned -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-stretch w-full max-w-xl mx-auto">
+      <button id="btn-open-builder" class="flex-1 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold text-base py-3.5 px-6 rounded-xl shadow-xl transition-all duration-300 hover:scale-105 border border-amber-300/40 flex items-center justify-center gap-2">
+        <span>📚</span> Vytvořit si knihovnu &rarr;
+      </button>
+
+      <button id="btn-import-landing" class="flex-1 bg-stone-900 border border-amber-900/50 hover:bg-stone-800 text-amber-100 font-semibold text-base py-3.5 px-6 rounded-xl shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+        <span>📤</span> Importovat knihovnu
+      </button>
     </div>
   </main>
 
+
+  <!-- STRÁNKA 1: NASTAVENÍ VELIKOSTI (SETUP) -->
+  <div id="page-setup" class="wooden-card fade-in hidden w-full max-w-lg p-8 text-center flex-col my-auto">
+    <h2 class="heading-serif text-3xl font-bold mb-6">Nastavení knihovny</h2>
+    
+    <div class="bg-stone-950/50 p-6 rounded-xl border border-amber-900/30 mb-6 text-left">
+      <div class="space-y-4">
+        <div>
+          <label for="cols" class="block text-sm font-medium text-amber-200/80 mb-1">Počet poliček v řadě (sloupce)</label>
+          <input type="number" id="cols" min="1" max="5" value="3" class="w-full px-4 py-2.5 bg-stone-900 border border-amber-900/50 rounded-lg text-amber-100 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+        </div>
+        
+        <div>
+          <label for="rows" class="block text-sm font-medium text-amber-200/80 mb-1">Počet poliček nad sebou (řádky)</label>
+          <input type="number" id="rows" min="1" max="10" value="4" class="w-full px-4 py-2.5 bg-stone-900 border border-amber-900/50 rounded-lg text-amber-100 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-3">
+      <button id="btn-back-to-landing" class="px-5 py-3 border border-amber-900/50 rounded-xl text-amber-200/70 hover:bg-stone-900 transition">
+        &larr; Zpět
+      </button>
+      <button id="btn-build-library" class="flex-grow bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold py-3 px-6 rounded-xl shadow-lg transition-all text-lg">
+        Postavit knihovnu &rarr;
+      </button>
+    </div>
+  </div>
+
+
+  <!-- STRÁNKA 2: NASTAVENÍ A EDITACE POLIČEK (SLUČENÝ KROK 2 & 3) -->
+  <div id="page-layout" class="wooden-card fade-in hidden w-full max-w-none p-6 md:p-8 min-h-[85vh] flex-col my-auto">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-6 pb-4 border-b border-amber-900/30 gap-4">
+      <div>
+        <h2 class="heading-serif text-2xl font-bold">Tvorba knihovny</h2>
+      </div>
+      <div class="flex gap-3">
+        <button id="btn-back-to-setup" class="px-4 py-2 border border-amber-900/50 rounded-lg text-amber-200/70 hover:bg-stone-900 transition text-sm">
+          &larr; Zpět
+        </button>
+        <button id="btn-finish-layout" class="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition-all text-sm flex items-center gap-2">
+          Zobrazit náhled &rarr;
+        </button>
+      </div>
+    </header>
+
+    <div class="flex flex-col md:flex-row gap-6 flex-grow h-full">
+      <!-- Vizuální reprezentace knihovny -->
+      <div class="flex-grow shelf-bg p-4 md:p-6 rounded-xl shadow-inner w-full relative min-h-[420px]" style="border: 10px solid rgba(0,0,0,0.3);">
+        <div id="library-container-layout" class="grid gap-x-4 gap-y-6 w-full mx-auto">
+          <!-- Zde se vygenerují poličky s knížkami -->
+        </div>
+      </div>
+
+      <!-- Panel pro nastavení vybrané poličky -->
+      <div id="shelf-settings-panel" class="w-full md:w-80 bg-stone-950/80 p-5 rounded-xl border border-amber-900/40 hidden flex-col h-fit sticky top-4 max-h-[80vh] overflow-y-auto shadow-xl">
+        <h3 class="font-bold text-lg text-amber-100 border-b border-amber-900/30 pb-2 mb-4">Obsah poličky</h3>
+        
+        <div id="shelf-sections-list" class="mb-6 space-y-2 flex-grow">
+          <!-- Sekce -->
+        </div>
+
+        <div class="border-t border-amber-900/30 pt-4 mt-auto">
+          <h4 class="font-semibold text-amber-200 mb-3">Přidat novou sekci</h4>
+          <div class="space-y-4">
+            <div>
+              <label for="book-count" class="block text-sm font-medium text-amber-200/80 mb-1">Počet položek v sekci</label>
+              <input type="number" id="book-count" min="1" max="15" value="1" class="w-full px-3 py-2 bg-stone-900 border border-amber-900/50 rounded text-amber-100 focus:ring-2 focus:ring-amber-500">
+            </div>
+
+            <div>
+              <span class="block text-sm font-medium text-amber-200/80 mb-2">Typ a uspořádání sekce</span>
+              <div class="flex flex-col gap-2">
+                <label class="flex items-center p-2.5 bg-stone-900/60 border border-amber-900/40 rounded-lg hover:bg-stone-900 cursor-pointer transition text-sm">
+                  <input type="radio" name="orientation" value="vertical" checked class="mr-3 text-amber-500 focus:ring-amber-500 w-4 h-4">
+                  📖 Knihy vertikálně (stojící)
+                </label>
+                <label class="flex items-center p-2.5 bg-stone-900/60 border border-amber-900/40 rounded-lg hover:bg-stone-900 cursor-pointer transition text-sm">
+                  <input type="radio" name="orientation" value="horizontal" class="mr-3 text-amber-500 focus:ring-amber-500 w-4 h-4">
+                  📕 Knihy horizontálně (ležící na sobě)
+                </label>
+                <label class="flex items-center p-2.5 bg-stone-900/60 border border-amber-900/40 rounded-lg hover:bg-stone-900 cursor-pointer transition text-sm">
+                  <input type="radio" name="orientation" value="cd-vertical" class="mr-3 text-amber-500 focus:ring-amber-500 w-4 h-4">
+                  💿 Audioknihy (CD stojící v krabičce)
+                </label>
+                <label class="flex items-center p-2.5 bg-stone-900/60 border border-amber-900/40 rounded-lg hover:bg-stone-900 cursor-pointer transition text-sm">
+                  <input type="radio" name="orientation" value="cd-horizontal" class="mr-3 text-amber-500 focus:ring-amber-500 w-4 h-4">
+                  🎧 Audioknihy (CD stoh ležící na sobě)
+                </label>
+
+              </div>
+            </div>
+
+            <button id="btn-add-section" class="w-full bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold py-2.5 px-4 rounded-lg shadow transition-all">
+              + Přidat do poličky
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- STRÁNKA 3: FINÁLNÍ NÁHLED HOTOVÉ KNIHOVNY (BEZ EDITACE) -->
+  <div id="page-preview" class="wooden-card fade-in hidden w-full max-w-none p-6 md:p-8 min-h-[85vh] flex-col my-auto">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-6 pb-4 border-b border-amber-900/30 gap-4">
+      <div>
+        <h2 class="heading-serif text-2xl font-bold">Náhled knihovny</h2>
+      </div>
+      <div class="flex gap-3">
+        <button id="btn-back-to-layout" class="px-4 py-2 bg-stone-900 border border-amber-900/50 hover:bg-stone-800 text-amber-100 font-semibold rounded-lg shadow transition text-sm flex items-center gap-1.5">
+          ✏️ Upravit knihovnu
+        </button>
+        <button id="btn-restart" class="px-4 py-2 bg-red-950/60 border border-red-800/40 text-red-300 rounded-lg hover:bg-red-900/50 transition text-sm">
+          Začít znovu
+        </button>
+      </div>
+    </header>
+
+
+    <!-- Vizuální reprezentace knihovny (Finální Náhled) -->
+    <div class="flex-grow shelf-bg p-4 md:p-6 rounded-xl shadow-inner w-full relative min-h-[420px]" style="border: 10px solid rgba(0,0,0,0.3);">
+      <div id="library-container-final" class="grid gap-x-4 gap-y-6 w-full mx-auto">
+        <!-- Zde se vykreslí finální poličky -->
+      </div>
+    </div>
+
+    <!-- Export & Import zálohy knihovny -->
+    <div class="mt-6 pt-4 border-t border-amber-900/30 flex flex-wrap items-center justify-end gap-3">
+      <input type="file" id="input-import-file" accept=".json" class="hidden">
+      
+      <button id="btn-export-library" class="px-4 py-2.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-sm border border-amber-300/30">
+        📥 Exportovat knihovnu
+      </button>
+
+      <button id="btn-import-library" class="px-4 py-2.5 bg-stone-900 border border-amber-900/50 hover:bg-stone-800 text-amber-100 font-semibold rounded-xl shadow transition-all flex items-center justify-center gap-2 text-sm">
+        📤 Importovat knihovnu
+      </button>
+    </div>
+  </div>
+
+
+  <!-- MODÁL PRO NÁHLED INFORMACÍ O KNIZE A AUDIOKNIZE (READ-ONLY) -->
+  <div id="info-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div id="info-modal-content" class="wooden-card p-6 w-full max-w-md transform transition-transform scale-95 border border-amber-500/30 flex flex-col gap-4">
+      <div class="flex justify-between items-start border-b border-amber-900/40 pb-3">
+        <div>
+          <span id="info-item-type-badge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            📖 Papírová kniha
+          </span>
+          <h3 id="info-title" class="heading-serif text-2xl font-bold mt-2 text-amber-100">Název knihy</h3>
+        </div>
+        <button id="btn-close-info-x" class="text-amber-200/60 hover:text-amber-100 text-xl font-bold p-1 leading-none">&times;</button>
+      </div>
+
+      <!-- Stav & Datum -->
+      <div id="info-status-container" class="flex items-center justify-between p-3 rounded-xl bg-stone-950/60 border border-amber-900/30">
+        <div class="flex items-center gap-2">
+          <span id="info-status-icon" class="text-emerald-400 font-bold">✓</span>
+          <span id="info-status-text" class="text-sm font-semibold text-emerald-400">Přečteno</span>
+        </div>
+        <span id="info-date-text" class="text-xs text-amber-200/60 font-mono"></span>
+      </div>
+
+      <!-- Hodnocení -->
+      <div class="flex items-center justify-between p-3 rounded-xl bg-stone-950/60 border border-amber-900/30">
+        <span class="text-xs font-semibold text-amber-200/70">Hodnocení:</span>
+        <span id="info-rating-stars" class="text-amber-400 text-base font-bold">⭐⭐⭐⭐⭐</span>
+      </div>
+
+      <!-- Poznámky -->
+      <div id="info-notes-wrapper">
+        <span class="block text-xs font-semibold text-amber-200/70 mb-1.5">Poznámky & Dojmy:</span>
+        <div id="info-notes-text" class="p-3.5 bg-stone-900/90 rounded-xl border border-amber-900/40 text-sm text-amber-100/90 italic">
+          <!-- Text poznámky -->
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center border-t border-amber-900/30 pt-4 mt-2">
+        <button id="btn-edit-from-info" class="px-3.5 py-2 bg-stone-900 border border-amber-900/50 hover:bg-stone-800 text-amber-200 text-xs font-semibold rounded-xl flex items-center gap-1.5">
+          ✏️ Upravit položku
+        </button>
+        <button id="btn-close-info" class="px-5 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold text-sm rounded-xl shadow">
+          Zavřít
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODÁL PRO EDITACI KNIHY A AUDIOKNIHY CD -->
+  <div id="book-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div id="book-modal-content" class="wooden-card p-6 w-full max-w-lg transform transition-transform scale-95 border border-amber-500/30 max-h-[90vh] overflow-y-auto">
+      <h3 id="modal-header-title" class="heading-serif text-2xl font-bold mb-4 border-b border-amber-900/40 pb-2">Detail položky</h3>
+      
+      <!-- Název položky -->
+      <div class="mb-4">
+        <label id="modal-label-title" for="book-title-input" class="block text-sm font-medium text-amber-200/80 mb-1.5">Název položky</label>
+        <input type="text" id="book-title-input" placeholder="Zadej název..." class="w-full px-3.5 py-2.5 bg-stone-900 border border-amber-900/50 rounded-lg text-amber-100 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+      </div>
+
+
+
+      <!-- Stav přečtení / naposlouchání a Datum -->
+      <div id="modal-read-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 bg-stone-950/60 p-3.5 rounded-xl border border-amber-900/30">
+        <div>
+          <label class="flex items-center gap-2.5 cursor-pointer mt-1">
+            <input type="checkbox" id="book-read-checkbox" class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
+            <span id="modal-label-read" class="font-bold text-amber-100 text-sm">Přečteno / Naposloucháno</span>
+          </label>
+        </div>
+        <div>
+          <label for="book-read-date-input" class="block text-xs font-medium text-amber-200/80 mb-1">Datum dokončení</label>
+          <input type="date" id="book-read-date-input" class="w-full px-3 py-1.5 bg-stone-900 border border-amber-900/50 rounded-lg text-amber-100 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- Hodnocení (1-5 hvězdiček) -->
+      <div id="modal-rating-container" class="mb-4 bg-stone-950/60 p-3.5 rounded-xl border border-amber-900/30">
+        <span class="block text-xs font-medium text-amber-200/80 mb-1.5">Moje hodnocení</span>
+        <div class="star-rating-container" id="star-rating">
+          <button type="button" class="star-btn" data-value="1" title="1 z 5">⭐</button>
+          <button type="button" class="star-btn" data-value="2" title="2 z 5">⭐</button>
+          <button type="button" class="star-btn" data-value="3" title="3 z 5">⭐</button>
+          <button type="button" class="star-btn" data-value="4" title="4 z 5">⭐</button>
+          <button type="button" class="star-btn" data-value="5" title="5 z 5">⭐</button>
+          <span id="rating-text" class="text-xs text-amber-300/80 ml-2 font-semibold">Nehodnoceno</span>
+        </div>
+      </div>
+
+      <!-- Poznámky -->
+      <div class="mb-4">
+        <label for="book-notes-input" class="block text-xs font-medium text-amber-200/80 mb-1.5">Poznámky & Dojmy</label>
+        <textarea id="book-notes-input" rows="3" placeholder="Zadej své poznámky, citáty nebo dojmy z čtení..." class="w-full px-3.5 py-2 bg-stone-900 border border-amber-900/50 rounded-lg text-amber-100 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none resize-none"></textarea>
+      </div>
+
+      <!-- Barva štítku -->
+      <div class="mb-5">
+        <span id="modal-label-color" class="block text-xs font-medium text-amber-200/80 mb-1">Barva štítku / Obalu</span>
+        <div class="flex flex-wrap gap-2.5 items-center mt-2" id="color-picker">
+          <!-- Tlačítka pro barvy -->
+        </div>
+      </div>
+
+      <!-- Tlačítka zrušit a uložit -->
+      <div class="flex justify-end gap-3 border-t border-amber-900/30 pt-4">
+        <button id="btn-cancel-book" class="px-4 py-2 border border-amber-900/40 rounded-lg text-amber-200/70 hover:bg-stone-900 transition">Zrušit</button>
+        <button id="btn-save-book" class="px-5 py-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold rounded-lg shadow transition">Uložit položku</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- JAVASCRIPT LOGIKA -->
+  <script>
+    // --- SPRÁVA TÉMAT (THEMES) ---
+    let currentTheme = 'wood';
+
+    function setTheme(themeName) {
+      currentTheme = themeName;
+      document.body.className = `theme-${themeName} p-4 md:p-8`;
+      
+      // Zvýraznění aktivního tlačítka tématu
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        if (btn.dataset.theme === themeName) {
+          btn.classList.add('ring-2', 'ring-amber-400', 'bg-amber-900/50');
+        } else {
+          btn.classList.remove('ring-2', 'ring-amber-400', 'bg-amber-900/50');
+        }
+      });
+
+      try {
+        localStorage.setItem('moje_knihovna_theme', themeName);
+      } catch (e) {}
+    }
+
+    function loadTheme() {
+      try {
+        const savedTheme = localStorage.getItem('moje_knihovna_theme');
+        if (savedTheme && ['wood', 'oak', 'light', 'dark', 'future', 'emerald'].includes(savedTheme)) {
+          setTheme(savedTheme);
+          return;
+        }
+      } catch (e) {}
+      setTheme('wood');
+    }
+
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setTheme(btn.dataset.theme);
+      });
+    });
+
+
+    // --- STAV APLIKACE & LOCAL STORAGE ---
+    let libraryState = {
+      rows: 4,
+      cols: 3,
+      shelves: []
+    };
+    
+    let currentSelectedShelfId = null;
+    let currentSelectedBookElement = null;
+    let currentPageName = 'landing';
+
+    const bookColors = [
+      { id: 'default', hex: null, name: 'Nepřečteno (šedá)' },
+      { id: 'red', hex: '#ef4444', name: 'Červená' },
+      { id: 'blue', hex: '#3b82f6', name: 'Modrá' },
+      { id: 'green', hex: '#10b981', name: 'Zelená' },
+      { id: 'yellow', hex: '#f59e0b', name: 'Žlutá' },
+      { id: 'purple', hex: '#8b5cf6', name: 'Fialová' },
+      { id: 'pink', hex: '#ec4899', name: 'Růžová' },
+      { id: 'orange', hex: '#f97316', name: 'Oranžová' },
+      { id: 'teal', hex: '#14b8a6', name: 'Tyrkysová' }
+    ];
+
+    const pages = {
+      landing: document.getElementById('page-landing'),
+      setup: document.getElementById('page-setup'),
+      layout: document.getElementById('page-layout'),
+      preview: document.getElementById('page-preview')
+    };
+
+    document.getElementById('btn-open-builder').addEventListener('click', () => {
+      showPage('setup');
+    });
+
+    document.getElementById('btn-back-to-landing').addEventListener('click', () => {
+      showPage('landing');
+    });
+
+    const inputRows = document.getElementById('rows');
+    const inputCols = document.getElementById('cols');
+    const btnBuild = document.getElementById('btn-build-library');
+
+    const layoutContainer = document.getElementById('library-container-layout');
+    const shelfSettingsPanel = document.getElementById('shelf-settings-panel');
+    const shelfSectionsList = document.getElementById('shelf-sections-list');
+    const inputBookCount = document.getElementById('book-count');
+    const radioOrientations = document.getElementsByName('orientation');
+    const btnAddSection = document.getElementById('btn-add-section');
+    const btnFinishLayout = document.getElementById('btn-finish-layout');
+    const btnBackToSetup = document.getElementById('btn-back-to-setup');
+
+    const finalContainer = document.getElementById('library-container-final');
+    const btnRestart = document.getElementById('btn-restart');
+    const btnBackToLayout = document.getElementById('btn-back-to-layout');
+
+    const bookModal = document.getElementById('book-modal');
+    const bookModalContent = document.getElementById('book-modal-content');
+    const bookTitleInput = document.getElementById('book-title-input');
+    const colorPickerContainer = document.getElementById('color-picker');
+    const btnSaveBook = document.getElementById('btn-save-book');
+    const btnCancelBook = document.getElementById('btn-cancel-book');
+
+    function saveStateToLocalStorage(pageName) {
+      try {
+        if (pageName) currentPageName = pageName;
+        const dataToSave = {
+          libraryState: libraryState,
+          currentPage: currentPageName,
+          timestamp: Date.now()
+        };
+        localStorage.setItem('moje_knihovna_data', JSON.stringify(dataToSave));
+      } catch (e) {
+        console.error('Nezdařilo se uložit stav:', e);
+      }
+    }
+
+    function loadStateFromLocalStorage() {
+      try {
+        const raw = localStorage.getItem('moje_knihovna_data');
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.libraryState && Array.isArray(parsed.libraryState.shelves) && parsed.libraryState.shelves.length > 0) {
+          libraryState = parsed.libraryState;
+          inputRows.value = libraryState.rows || 4;
+          inputCols.value = libraryState.cols || 3;
+          
+          renderLayoutLibrary();
+          renderFinalLibrary();
+          
+          let targetPage = parsed.currentPage || 'preview';
+          if (targetPage === 'edit') targetPage = 'preview';
+          showPage(targetPage, false);
+          return true;
+        }
+      } catch (e) {
+        console.error('Nezdařilo se načíst stav:', e);
+      }
+      return false;
+    }
+
+    function showPage(pageName, autoSave = true) {
+      currentPageName = pageName;
+      Object.values(pages).forEach(page => {
+        if (page) {
+          page.classList.add('hidden');
+          page.classList.remove('flex');
+        }
+      });
+      
+      const themeSwitcher = document.getElementById('theme-switcher-container');
+      if (themeSwitcher) {
+        if (pageName === 'preview') {
+          themeSwitcher.classList.add('hidden');
+        } else {
+          themeSwitcher.classList.remove('hidden');
+        }
+      }
+
+      const targetPage = pages[pageName] || pages.landing;
+      targetPage.classList.remove('hidden');
+      targetPage.classList.add('flex');
+      
+      targetPage.classList.remove('fade-in');
+      void targetPage.offsetWidth; 
+      targetPage.classList.add('fade-in');
+
+      if (autoSave && pageName !== 'landing') {
+        saveStateToLocalStorage(pageName);
+      }
+    }
+
+    function initColorPicker() {
+      colorPickerContainer.innerHTML = '';
+      
+      bookColors.forEach(color => {
+        const btn = document.createElement('button');
+        btn.className = 'color-picker-btn preset-color';
+        btn.title = color.name;
+        btn.dataset.colorId = color.id;
+        
+        if (color.hex) {
+          btn.style.backgroundColor = color.hex;
+          btn.dataset.hex = color.hex;
+        } else {
+          btn.classList.add('bg-stone-700');
+          btn.dataset.hex = '';
+          btn.innerHTML = '<span class="text-amber-200/80 font-bold" style="font-size: 11px; display:flex; align-items:center; justify-content:center; height:100%;">?</span>';
+        }
+
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.querySelectorAll('.color-picker-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        });
+        colorPickerContainer.appendChild(btn);
+      });
+
+      const customWrapper = document.createElement('div');
+      customWrapper.className = 'flex items-center pl-3 ml-2 border-l border-amber-900/40 h-8';
+      
+      const customLabel = document.createElement('span');
+      customLabel.textContent = 'Vlastní:';
+      customLabel.className = 'text-xs text-amber-200/60 mr-2';
+      
+      const customColorInput = document.createElement('input');
+      customColorInput.type = 'color';
+      customColorInput.id = 'custom-color-input';
+      customColorInput.title = 'Vybrat vlastní barvu';
+      customColorInput.value = '#3b82f6';
+      customColorInput.className = 'w-8 h-8 p-0 border-0 rounded-full cursor-pointer color-picker-btn';
+      
+      const selectCustom = () => {
+        document.querySelectorAll('.color-picker-btn').forEach(b => b.classList.remove('selected'));
+        customColorInput.classList.add('selected');
+      };
+      customColorInput.addEventListener('input', selectCustom);
+      customColorInput.addEventListener('click', selectCustom);
+      
+      customWrapper.appendChild(customLabel);
+      customWrapper.appendChild(customColorInput);
+      colorPickerContainer.appendChild(customWrapper);
+    }
+
+    btnBuild.addEventListener('click', () => {
+      let r = parseInt(inputRows.value);
+      let c = parseInt(inputCols.value);
+      
+      if (isNaN(r) || r < 1) r = 1; if (r > 15) r = 15;
+      if (isNaN(c) || c < 1) c = 1; if (c > 6) c = 6;
+
+      if (libraryState.rows !== r || libraryState.cols !== c || libraryState.shelves.length === 0) {
+        libraryState.rows = r;
+        libraryState.cols = c;
+        
+        libraryState.shelves = [];
+        for (let i = 0; i < r * c; i++) {
+          libraryState.shelves.push({
+            id: `shelf-${i}`,
+            sections: []
+          });
+        }
+      }
+
+      renderLayoutLibrary();
+      showPage('layout');
+    });
+
+    btnBackToSetup.addEventListener('click', () => {
+      showPage('setup');
+    });
+
+    function renderLayoutLibrary() {
+      layoutContainer.innerHTML = '';
+      layoutContainer.style.gridTemplateColumns = `repeat(${libraryState.cols}, minmax(0, 1fr))`;
+      layoutContainer.style.width = '100%';
+
+      libraryState.shelves.forEach((shelfData, index) => {
+        const shelfEl = document.createElement('div');
+        shelfEl.className = 'shelf';
+        shelfEl.id = shelfData.id;
+        shelfEl.dataset.index = index;
+        
+        renderBooksInShelf(shelfEl, shelfData, true); // Sloučený Krok 2: knihy na poličkách jsou rovnou klikací pro editaci!
+        shelfEl.addEventListener('click', (e) => {
+          if (!e.target.closest('.book')) {
+            selectShelfForLayout(shelfEl, shelfData);
+          }
+        });
+
+        layoutContainer.appendChild(shelfEl);
+      });
+    }
+
+    function selectShelfForLayout(shelfEl, shelfData) {
+      document.querySelectorAll('#library-container-layout .shelf').forEach(s => s.classList.remove('active'));
+      shelfEl.classList.add('active');
+      currentSelectedShelfId = shelfData.id;
+
+      shelfSettingsPanel.classList.remove('hidden');
+      shelfSettingsPanel.classList.add('flex');
+      
+      inputBookCount.value = 1;
+      radioOrientations[0].checked = true;
+      updateMaxBookLimit();
+      renderSectionsListUI(shelfData);
+    }
+
+    function renderSectionsListUI(shelfData) {
+      shelfSectionsList.innerHTML = '';
+      
+      if (shelfData.sections.length === 0) {
+        shelfSectionsList.innerHTML = '<p class="text-amber-200/40 text-sm italic text-center py-4">Polička je zatím prázdná.</p>';
+        return;
+      }
+
+      shelfData.sections.forEach((section, index) => {
+        const sectionEl = document.createElement('div');
+        sectionEl.className = 'flex justify-between items-center bg-stone-900 p-2.5 border border-amber-900/30 rounded-lg text-sm';
+        
+        let typeText = section.orientation === 'vertical' ? 'stojících knih' : 'ležících knih';
+        if (section.itemType === 'cd') {
+          typeText = section.orientation === 'vertical' ? 'stojících CD' : 'ležících CD';
+        }
+        
+        sectionEl.innerHTML = `
+          <span class="text-amber-200/90"><span class="font-bold text-amber-400">${section.books.length}x</span> ${typeText}</span>
+          <button class="text-red-400 hover:text-red-300 px-2 py-1 bg-red-950/60 border border-red-800/40 rounded text-xs" onclick="removeSection(${index})">
+            Smazat
+          </button>
+        `;
+        shelfSectionsList.appendChild(sectionEl);
+      });
+    }
+
+    function updateMaxBookLimit() {
+      const selectedValue = document.querySelector('input[name="orientation"]:checked').value;
+      const isVertical = selectedValue === 'vertical' || selectedValue === 'cd-vertical';
+      inputBookCount.max = isVertical ? 15 : 6; 
+      if (parseInt(inputBookCount.value) > parseInt(inputBookCount.max)) {
+        inputBookCount.value = inputBookCount.max;
+      }
+    }
+
+    radioOrientations.forEach(radio => {
+      radio.addEventListener('change', updateMaxBookLimit);
+    });
+
+    btnAddSection.addEventListener('click', () => {
+      if (!currentSelectedShelfId) return;
+
+      const shelfIndex = libraryState.shelves.findIndex(s => s.id === currentSelectedShelfId);
+      if (shelfIndex === -1) return;
+
+      let count = parseInt(inputBookCount.value);
+      const max = parseInt(inputBookCount.max);
+      if (isNaN(count) || count < 1) count = 1;
+      if (count > max) count = max;
+
+      const selectedValue = document.querySelector('input[name="orientation"]:checked').value;
+      let orientation = 'vertical';
+      let itemType = 'book';
+
+      if (selectedValue === 'cd-vertical') {
+        orientation = 'vertical';
+        itemType = 'cd';
+      } else if (selectedValue === 'cd-horizontal') {
+        orientation = 'horizontal';
+        itemType = 'cd';
+      } else if (selectedValue === 'horizontal') {
+        orientation = 'horizontal';
+        itemType = 'book';
+      }
+
+      const newSection = {
+        orientation: orientation,
+        itemType: itemType,
+        books: []
+      };
+
+      for (let i = 0; i < count; i++) {
+        newSection.books.push({
+          title: '',
+          colorHex: null,
+          itemType: itemType
+        });
+      }
+
+      libraryState.shelves[shelfIndex].sections.push(newSection);
+
+      const shelfEl = document.getElementById(currentSelectedShelfId);
+      renderBooksInShelf(shelfEl, libraryState.shelves[shelfIndex], true);
+      renderSectionsListUI(libraryState.shelves[shelfIndex]);
+      saveStateToLocalStorage('layout');
+    });
+
+    window.removeSection = function(sectionIndex) {
+      if (!currentSelectedShelfId) return;
+      const shelfIndex = libraryState.shelves.findIndex(s => s.id === currentSelectedShelfId);
+      if (shelfIndex === -1) return;
+
+      libraryState.shelves[shelfIndex].sections.splice(sectionIndex, 1);
+      
+      const shelfEl = document.getElementById(currentSelectedShelfId);
+      renderBooksInShelf(shelfEl, libraryState.shelves[shelfIndex], true);
+      renderSectionsListUI(libraryState.shelves[shelfIndex]);
+      saveStateToLocalStorage('layout');
+    };
+
+    let currentRating = 0;
+
+    function setStarRating(ratingValue) {
+      currentRating = ratingValue;
+      const starBtns = document.querySelectorAll('.star-btn');
+      starBtns.forEach(btn => {
+        const val = parseInt(btn.dataset.value);
+        if (val <= currentRating) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      const ratingText = document.getElementById('rating-text');
+      if (ratingText) {
+        if (currentRating > 0) {
+          ratingText.textContent = `${currentRating} z 5 ⭐`;
+        } else {
+          ratingText.textContent = 'Nehodnoceno';
+        }
+      }
+    }
+
+    document.querySelectorAll('.star-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const val = parseInt(btn.dataset.value);
+        if (currentRating === val) {
+          setStarRating(0);
+        } else {
+          setStarRating(val);
+        }
+      });
+    });
+
+    const bookReadCheckbox = document.getElementById('book-read-checkbox');
+    const bookReadDateInput = document.getElementById('book-read-date-input');
+    const bookNotesInput = document.getElementById('book-notes-input');
+
+    if (bookReadCheckbox) {
+      bookReadCheckbox.addEventListener('change', () => {
+        if (bookReadCheckbox.checked && !bookReadDateInput.value) {
+          bookReadDateInput.value = new Date().toISOString().slice(0, 10);
+        }
+      });
+    }
+
+    function createLibraryItem(bookData, section, shelfData, sIndex, bIndex, clickAction) {
+      const item = document.createElement('div');
+      const isCD = bookData.itemType === 'cd' || section.itemType === 'cd';
+      const isVert = section.orientation === 'vertical';
+
+      if (isCD) {
+        item.className = `book cd-case ${isVert ? 'vertical' : 'horizontal'}`;
+      } else {
+        item.className = `book ${isVert ? 'vertical' : 'horizontal'}`;
+      }
+
+      if (bookData.colorHex) {
+        item.style.backgroundColor = bookData.colorHex;
+      }
+
+      item.dataset.shelfId = shelfData.id;
+      item.dataset.sectionIndex = sIndex;
+      item.dataset.bookIndex = bIndex;
+      item.dataset.itemType = isCD ? 'cd' : 'book';
+
+      // Odznak přečteno / naposloucháno ✓
+      if (bookData.isRead) {
+        const readBadge = document.createElement('div');
+        readBadge.className = 'read-badge';
+        readBadge.innerHTML = '✓';
+        readBadge.title = isCD ? 'Naposloucháno' : 'Přečteno';
+        item.appendChild(readBadge);
+      }
+
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'book-title';
+      titleSpan.textContent = bookData.title || '';
+      item.appendChild(titleSpan);
+
+      if (isCD) {
+        const audioBadge = document.createElement('div');
+        audioBadge.className = 'audio-badge';
+        audioBadge.innerHTML = '🎧';
+        item.appendChild(audioBadge);
+      }
+
+      // Tooltip po najetí myší
+      let tooltip = bookData.title || (isCD ? 'Audiokniha' : 'Kniha');
+      if (bookData.isRead) {
+        tooltip += ` (${isCD ? 'Naposloucháno' : 'Přečteno'}${bookData.readDate ? ': ' + bookData.readDate : ''})`;
+      }
+      if (bookData.rating) {
+        tooltip += ` [${'⭐'.repeat(bookData.rating)}]`;
+      }
+      item.title = tooltip;
+
+      if (clickAction === 'edit') {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openBookEditor(item, shelfData.id, sIndex, bIndex);
+        });
+      } else if (clickAction === 'info') {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openInfoModal(bookData, isCD, shelfData.id, sIndex, bIndex);
+        });
+      }
+
+      return item;
+    }
+
+    function renderBooksInShelf(shelfEl, shelfData, isInteractiveForEdit = true) {
+      shelfEl.innerHTML = '';
+      
+      shelfData.sections.forEach((section, sIndex) => {
+        let container = shelfEl;
+        
+        if (section.orientation === 'horizontal') {
+          container = document.createElement('div');
+          container.className = 'book-stack';
+          shelfEl.appendChild(container);
+        }
+
+        section.books.forEach((bookData, bIndex) => {
+          const item = createLibraryItem(bookData, section, shelfData, sIndex, bIndex, isInteractiveForEdit ? 'edit' : false);
+          if (section.orientation === 'horizontal') {
+            container.appendChild(item);
+          } else {
+            shelfEl.appendChild(item);
+          }
+        });
+      });
+    }
+
+    function renderFinalLibrary() {
+      finalContainer.style.gridTemplateColumns = `repeat(${libraryState.cols}, minmax(0, 1fr))`;
+      finalContainer.style.width = '100%';
+      finalContainer.innerHTML = '';
+      
+      libraryState.shelves.forEach((shelfData) => {
+        const shelfEl = document.createElement('div');
+        shelfEl.className = 'shelf';
+        shelfEl.style.cursor = 'default';
+        
+        shelfData.sections.forEach((section, sIndex) => {
+          let container = shelfEl;
+          
+          if (section.orientation === 'horizontal') {
+            container = document.createElement('div');
+            container.className = 'book-stack';
+            shelfEl.appendChild(container);
+          }
+
+          section.books.forEach((bookData, bIndex) => {
+            // V Kroku 3 (Náhled): položky otevírají detailní rozklikávací rozhraní 'info'
+            const item = createLibraryItem(bookData, section, shelfData, sIndex, bIndex, 'info');
+            if (section.orientation === 'horizontal') {
+              container.appendChild(item);
+            } else {
+              shelfEl.appendChild(item);
+            }
+          });
+        });
+
+        finalContainer.appendChild(shelfEl);
+      });
+    }
+
+    btnFinishLayout.addEventListener('click', () => {
+      renderFinalLibrary();
+      showPage('preview');
+    });
+
+    btnBackToLayout.addEventListener('click', () => {
+      renderLayoutLibrary();
+      showPage('layout');
+    });
+
+    // --- READ-ONLY INFO MODAL LOGIKA ---
+    let currentInfoItemRef = null;
+
+    function openInfoModal(bookData, isCD, shelfId, sectionIndex, bookIndex) {
+      currentInfoItemRef = { shelfId, sectionIndex, bookIndex };
+
+      const infoItemTypeBadge = document.getElementById('info-item-type-badge');
+      const infoTitle = document.getElementById('info-title');
+      const infoStatusIcon = document.getElementById('info-status-icon');
+      const infoStatusText = document.getElementById('info-status-text');
+      const infoDateText = document.getElementById('info-date-text');
+      const infoRatingStars = document.getElementById('info-rating-stars');
+      const infoNotesWrapper = document.getElementById('info-notes-wrapper');
+      const infoNotesText = document.getElementById('info-notes-text');
+
+      if (infoItemTypeBadge) infoItemTypeBadge.textContent = isCD ? '🎧 Audiokniha (CD)' : '📖 Papírová kniha';
+      if (infoTitle) infoTitle.textContent = bookData.title || (isCD ? 'Nepojmenovaná audiokniha' : 'Nepojmenovaná kniha');
+
+      if (bookData.isRead) {
+        if (infoStatusIcon) { infoStatusIcon.textContent = '✓'; infoStatusIcon.className = 'text-emerald-400 font-bold text-lg'; }
+        if (infoStatusText) { infoStatusText.textContent = isCD ? 'Naposloucháno' : 'Přečteno'; infoStatusText.className = 'text-sm font-semibold text-emerald-400'; }
+        if (infoDateText) infoDateText.textContent = bookData.readDate ? `Dokončeno: ${bookData.readDate}` : '';
+      } else {
+        if (infoStatusIcon) { infoStatusIcon.textContent = '⏳'; infoStatusIcon.className = 'text-amber-400 font-bold text-lg'; }
+        if (infoStatusText) { infoStatusText.textContent = isCD ? 'Čeká na poslech' : 'Čeká na přečtení'; infoStatusText.className = 'text-sm font-semibold text-amber-300'; }
+        if (infoDateText) infoDateText.textContent = '';
+      }
+
+      if (infoRatingStars) {
+        if (bookData.rating && bookData.rating > 0) {
+          infoRatingStars.textContent = `${'⭐'.repeat(bookData.rating)} (${bookData.rating}/5)`;
+        } else {
+          infoRatingStars.textContent = 'Nehodnoceno';
+        }
+      }
+
+      if (infoNotesWrapper && infoNotesText) {
+        if (bookData.notes && bookData.notes.trim()) {
+          infoNotesText.textContent = `"${bookData.notes.trim()}"`;
+          infoNotesWrapper.classList.remove('hidden');
+        } else {
+          infoNotesWrapper.classList.add('hidden');
+        }
+      }
+
+      const infoModal = document.getElementById('info-modal');
+      const infoModalContent = document.getElementById('info-modal-content');
+      infoModal.classList.remove('hidden');
+      setTimeout(() => {
+        infoModalContent.classList.remove('scale-95');
+        infoModalContent.classList.add('scale-100');
+      }, 10);
+    }
+
+    function closeInfoModal() {
+      const infoModal = document.getElementById('info-modal');
+      const infoModalContent = document.getElementById('info-modal-content');
+      infoModalContent.classList.remove('scale-100');
+      infoModalContent.classList.add('scale-95');
+      setTimeout(() => {
+        infoModal.classList.add('hidden');
+      }, 200);
+    }
+
+    document.getElementById('btn-close-info').addEventListener('click', closeInfoModal);
+    document.getElementById('btn-close-info-x').addEventListener('click', closeInfoModal);
+    document.getElementById('info-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('info-modal')) {
+        closeInfoModal();
+      }
+    });
+
+    document.getElementById('btn-edit-from-info').addEventListener('click', () => {
+      closeInfoModal();
+      if (currentInfoItemRef) {
+        showPage('layout');
+        const shelf = libraryState.shelves.find(s => s.id === currentInfoItemRef.shelfId);
+        if (shelf) {
+          const targetEl = document.querySelector(`#library-container-layout .book[data-shelf-id="${currentInfoItemRef.shelfId}"][data-section-index="${currentInfoItemRef.sectionIndex}"][data-book-index="${currentInfoItemRef.bookIndex}"]`);
+          openBookEditor(targetEl, currentInfoItemRef.shelfId, currentInfoItemRef.sectionIndex, currentInfoItemRef.bookIndex);
+        }
+      }
+    });
+
+    // --- EDITOR MODAL LOGIKA ---
+    function openBookEditor(bookElement, shelfId, sectionIndex, bookIndex) {
+      currentSelectedBookElement = bookElement;
+      
+      const shelf = libraryState.shelves.find(s => s.id === shelfId);
+      const bookData = shelf.sections[sectionIndex].books[bookIndex];
+      const isCD = bookData.itemType === 'cd' || shelf.sections[sectionIndex].itemType === 'cd';
+
+      const modalHeaderTitle = document.getElementById('modal-header-title');
+      const modalLabelTitle = document.getElementById('modal-label-title');
+      const modalLabelColor = document.getElementById('modal-label-color');
+      const modalDescColor = document.getElementById('modal-desc-color');
+      const modalLabelRead = document.getElementById('modal-label-read');
+
+      if (modalHeaderTitle) modalHeaderTitle.textContent = isCD ? '🎧 Detail audioknihy (CD)' : '📚 Detail knihy';
+      if (modalLabelTitle) modalLabelTitle.textContent = isCD ? 'Název audioknihy / Interpret' : 'Název knihy';
+      if (modalLabelColor) modalLabelColor.textContent = isCD ? 'Stav / Barva CD obalu' : 'Stav / Barva knihy';
+      if (modalLabelRead) modalLabelRead.textContent = isCD ? 'Naposloucháno' : 'Přečteno';
+
+      bookTitleInput.placeholder = isCD ? 'Zadej název audioknihy...' : 'Zadej název knihy...';
+      bookTitleInput.value = bookData.title || '';
+
+      if (bookReadCheckbox) bookReadCheckbox.checked = !!bookData.isRead;
+      if (bookReadDateInput) bookReadDateInput.value = bookData.readDate || '';
+      if (bookNotesInput) bookNotesInput.value = bookData.notes || '';
+      setStarRating(bookData.rating || 0);
+      
+      const colorToFind = bookData.colorHex || '';
+      const customColorInput = document.getElementById('custom-color-input');
+      
+      document.querySelectorAll('.color-picker-btn').forEach(btn => btn.classList.remove('selected'));
+      
+      let presetFound = false;
+      document.querySelectorAll('.preset-color').forEach(btn => {
+        if (btn.dataset.hex === colorToFind) {
+          btn.classList.add('selected');
+          presetFound = true;
+        }
+      });
+      
+      if (!presetFound && colorToFind !== '') {
+        customColorInput.value = colorToFind;
+        customColorInput.classList.add('selected');
+      }
+
+      bookModal.classList.remove('hidden');
+      setTimeout(() => {
+        bookModalContent.classList.remove('scale-95');
+        bookModalContent.classList.add('scale-100');
+        bookTitleInput.focus();
+      }, 10);
+    }
+
+    function closeBookEditor() {
+      bookModalContent.classList.remove('scale-100');
+      bookModalContent.classList.add('scale-95');
+      setTimeout(() => {
+        bookModal.classList.add('hidden');
+        currentSelectedBookElement = null;
+      }, 200);
+    }
+
+    btnSaveBook.addEventListener('click', () => {
+      if (!currentSelectedBookElement) return;
+
+      const shelfId = currentSelectedBookElement.dataset.shelfId;
+      const sectionIndex = currentSelectedBookElement.dataset.sectionIndex;
+      const bookIndex = currentSelectedBookElement.dataset.bookIndex;
+      
+      const shelf = libraryState.shelves.find(s => s.id === shelfId);
+      const bookData = shelf.sections[sectionIndex].books[bookIndex];
+
+      const newTitle = bookTitleInput.value.trim();
+      const selectedColorBtn = document.querySelector('.color-picker-btn.selected');
+      
+      let newColorHex = null;
+      if (selectedColorBtn) {
+        if (selectedColorBtn.id === 'custom-color-input') {
+          newColorHex = selectedColorBtn.value;
+        } else {
+          newColorHex = selectedColorBtn.dataset.hex || null;
+        }
+      }
+
+      bookData.title = newTitle;
+      bookData.colorHex = newColorHex;
+      bookData.isRead = bookReadCheckbox ? bookReadCheckbox.checked : false;
+      bookData.readDate = bookReadDateInput ? (bookReadDateInput.value || null) : null;
+      bookData.rating = currentRating;
+      bookData.notes = bookNotesInput ? bookNotesInput.value.trim() : '';
+
+      renderLayoutLibrary();
+      renderFinalLibrary();
+      saveStateToLocalStorage('layout');
+      closeBookEditor();
+    });
+
+    btnCancelBook.addEventListener('click', closeBookEditor);
+    
+    bookModal.addEventListener('click', (e) => {
+      if (e.target === bookModal) {
+        closeBookEditor();
+      }
+    });
+
+    btnRestart.addEventListener('click', () => {
+      if (confirm('Opravdu chceš smazat celou knihovnu a začít znovu?')) {
+        try {
+          localStorage.removeItem('moje_knihovna_data');
+        } catch (e) {}
+        libraryState.shelves = [];
+        currentSelectedShelfId = null;
+        layoutContainer.innerHTML = '';
+        finalContainer.innerHTML = '';
+        shelfSettingsPanel.classList.add('hidden');
+        showPage('setup', false);
+      }
+    });
+
+    // EXPORT A IMPORT ZÁLOHY
+    const btnExportLibrary = document.getElementById('btn-export-library');
+    const btnImportLibrary = document.getElementById('btn-import-library');
+    const btnImportLanding = document.getElementById('btn-import-landing');
+    const inputImportFile = document.getElementById('input-import-file');
+
+    if (btnExportLibrary) {
+      btnExportLibrary.addEventListener('click', () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(libraryState, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `moje_knihovna_zaloha_${new Date().toISOString().slice(0,10)}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+      });
+    }
+
+    function triggerImportFile() {
+      if (inputImportFile) inputImportFile.click();
+    }
+
+    if (btnImportLanding) {
+      btnImportLanding.addEventListener('click', triggerImportFile);
+    }
+    if (btnImportLibrary) {
+      btnImportLibrary.addEventListener('click', triggerImportFile);
+    }
+
+    if (inputImportFile) {
+      inputImportFile.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const importedState = JSON.parse(event.target.result);
+            if (importedState && Array.isArray(importedState.shelves)) {
+              libraryState = importedState;
+              if (importedState.rows) inputRows.value = importedState.rows;
+              if (importedState.cols) inputCols.value = importedState.cols;
+              renderLayoutLibrary();
+              renderFinalLibrary();
+              saveStateToLocalStorage('layout');
+              showPage('preview');
+              alert('Knihovna byla úspěšně importována!');
+            } else {
+              alert('Neplatný formát souboru zálohy.');
+            }
+          } catch (err) {
+            alert('Chyba při čtení souboru: ' + err.message);
+          }
+          inputImportFile.value = '';
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    // INICIALIZACE APLIKACE
+    initColorPicker();
+    loadTheme();
+    loadStateFromLocalStorage();
+  </script>
 </body>
 </html>
