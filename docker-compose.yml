@@ -1,20 +1,12 @@
-# Šablona pro appku BEZ vlastní databáze (výchozí varianta).
-# Nahraď: OWNER/REPO (GHCR image), HOSTNAME, PORT (interní port kontejneru).
-# HOSTNAME = foo.vitakriz.cz, ekotex.eu, nebo víc hostnamů: "http://ekotex.eu, http://www.ekotex.eu"
-# Jiné varianty: docker-compose.static.yml (statický web), docker-compose.with-db.yml (PostgreSQL).
-
 services:
   app:
-    image: ghcr.io/OWNER/REPO:latest
+    image: ghcr.io/k2ata2/knihovna:latest
     restart: unless-stopped
-    env_file:
-      - path: .env
-        required: false   # .env na VPS je volitelný, appka naběhne i bez něj
     networks:
       - proxy
     labels:
-      caddy: http://HOSTNAME
-      caddy.reverse_proxy: "{{upstreams PORT}}"
+      caddy: http://knihovna.k2ata.cz
+      caddy.reverse_proxy: "{{upstreams 80}}"
 
 networks:
   proxy:

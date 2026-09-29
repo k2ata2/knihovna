@@ -6,7 +6,7 @@ on:
   workflow_dispatch:           # ruční spuštění (např. po vytvoření .env na VPS)
 
 env:
-  APP_NAME: CHANGE_ME          # název adresáře v /opt/apps/ na VPS, jen [a-z0-9-]
+  APP_NAME: knihovna          # název adresáře v /opt/apps/ na VPS, jen [a-z0-9-]
   IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
