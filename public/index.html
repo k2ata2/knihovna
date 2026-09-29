@@ -4,26 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Knihovna — Ahoj čtenáři!</title>
-  <meta name="description" content="Vítejte v online knihovně. Vytvořená stránka pro knihovna.k2ata.cz.">
+  <meta name="description" content="Vítejte v tradiční i digitální knihovně na doméně knihovna.k2ata.cz.">
   
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Playfair Display + Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-dark: #0b0f19;
-      --card-bg: rgba(255, 255, 255, 0.03);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-glow: rgba(99, 102, 241, 0.15);
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent-violet: #818cf8;
-      --accent-indigo: #6366f1;
-      --accent-cyan: #38bdf8;
-      --accent-rose: #f43f5e;
+      --wood-dark: #120a07;
+      --wood-base: #1c100b;
+      --wood-card: rgba(36, 20, 14, 0.75);
+      --wood-border: rgba(217, 119, 6, 0.22);
+      --gold-accent: #f59e0b;
+      --gold-light: #fbbf24;
+      --gold-warm: #d97706;
+      --gold-gradient: linear-gradient(135deg, #fef3c7 0%, #f59e0b 50%, #b45309 100%);
+      --text-warm-light: #fef3c7;
+      --text-warm-body: #e5d5c5;
+      --text-warm-muted: #a89280;
     }
 
     * {
@@ -34,8 +34,12 @@
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-primary);
+      background-color: var(--wood-dark);
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(180, 83, 9, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(217, 119, 6, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(120, 53, 15, 0.2) 0%, transparent 50%);
+      color: var(--text-warm-body);
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -44,194 +48,253 @@
       position: relative;
     }
 
-    /* Dynamic background ambient lights */
-    .bg-light {
+    /* Ambient Warm Fireplace / Lamp Light Glows */
+    .glow-light {
       position: absolute;
       border-radius: 50%;
-      filter: blur(120px);
-      opacity: 0.45;
+      filter: blur(100px);
+      opacity: 0.35;
       pointer-events: none;
-      animation: float 14s ease-in-out infinite alternate;
+      animation: warmPulse 10s ease-in-out infinite alternate;
     }
 
-    .bg-light-1 {
-      width: 450px;
-      height: 450px;
-      background: radial-gradient(circle, var(--accent-indigo), transparent 70%);
-      top: -100px;
-      left: -100px;
+    .glow-light-1 {
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, #b45309, transparent 70%);
+      top: -120px;
+      left: 10%;
     }
 
-    .bg-light-2 {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, #4f46e5, transparent 70%);
-      bottom: -120px;
-      right: -100px;
-      animation-delay: -7s;
+    .glow-light-2 {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, #78350f, transparent 70%);
+      bottom: -100px;
+      right: 15%;
+      animation-delay: -5s;
     }
 
-    .bg-light-3 {
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, var(--accent-cyan), transparent 70%);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0.2;
+    @keyframes warmPulse {
+      0% { transform: scale(1) translateY(0); opacity: 0.3; }
+      100% { transform: scale(1.12) translateY(20px); opacity: 0.45; }
     }
 
-    @keyframes float {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-      100% {
-        transform: translate(40px, 50px) scale(1.1);
-      }
+    /* Wooden Shelf Line background pattern */
+    .wood-lines {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.2) 1px, transparent 1px);
+      background-size: 100% 48px;
+      opacity: 0.4;
+      pointer-events: none;
     }
 
-    /* Container */
+    /* Main Container (Wooden Panel Frame) */
     .container {
       position: relative;
       z-index: 10;
       width: 90%;
-      max-width: 640px;
-      padding: 2.5rem;
-      border-radius: 28px;
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
+      max-width: 650px;
+      padding: 3rem 2.5rem;
+      border-radius: 20px;
+      background: var(--wood-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--wood-border);
       box-shadow: 
-        0 30px 60px -12px rgba(0, 0, 0, 0.5),
-        0 0 40px -10px var(--card-glow);
+        0 25px 60px -15px rgba(0, 0, 0, 0.8),
+        inset 0 1px 1px rgba(254, 243, 199, 0.15),
+        0 0 40px rgba(180, 83, 9, 0.12);
       text-align: center;
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 14px;
+      border: 1px solid rgba(217, 119, 6, 0.15);
+      pointer-events: none;
     }
 
     .container:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
       box-shadow: 
-        0 40px 70px -12px rgba(0, 0, 0, 0.6),
-        0 0 50px -5px rgba(99, 102, 241, 0.25);
+        0 35px 75px -15px rgba(0, 0, 0, 0.9),
+        inset 0 1px 2px rgba(254, 243, 199, 0.25),
+        0 0 50px rgba(245, 158, 11, 0.2);
     }
 
-    /* Book Icon Header */
-    .icon-wrapper {
+    /* Golden Emblem / Book Icon */
+    .emblem {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 76px;
-      height: 76px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(129, 140, 248, 0.05));
-      border: 1px solid rgba(129, 140, 248, 0.3);
-      margin-bottom: 1.75rem;
-      color: var(--accent-violet);
-      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #2a170e, #140b07);
+      border: 2px solid rgba(245, 158, 11, 0.4);
+      margin-bottom: 1.5rem;
+      color: var(--gold-light);
+      box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.6),
+        0 0 20px rgba(217, 119, 6, 0.25),
+        inset 0 2px 4px rgba(254, 243, 199, 0.2);
+      position: relative;
     }
 
-    .icon-wrapper svg {
-      width: 38px;
-      height: 38px;
-      stroke-width: 1.8;
+    .emblem svg {
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     }
 
-    /* Badge */
+    /* Elegant Badge */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 14px;
+      padding: 6px 18px;
       border-radius: 100px;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(129, 140, 248, 0.25);
-      color: var(--accent-violet);
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      margin-bottom: 1.25rem;
+      background: rgba(180, 83, 9, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--gold-light);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
     }
 
     .badge-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background-color: #34d399;
-      box-shadow: 0 0 10px #34d399;
-      animation: pulse 2s infinite;
+      background-color: var(--gold-light);
+      box-shadow: 0 0 10px var(--gold-light);
+      animation: pulse 2.5s infinite;
     }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.85); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
 
-    /* Heading */
+    /* Heading in Serif Classical Style */
     h1 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 3rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 3.4rem;
       font-weight: 800;
       line-height: 1.15;
-      letter-spacing: -0.03em;
-      background: linear-gradient(135deg, #ffffff 30%, var(--accent-violet) 100%);
+      letter-spacing: -0.01em;
+      background: var(--gold-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 1rem;
+      margin-bottom: 1.1rem;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
     }
 
-    /* Paragraph */
+    /* Subheading / Description */
     p.description {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
+      font-size: 1.125rem;
+      color: var(--text-warm-body);
+      line-height: 1.7;
       font-weight: 400;
+      max-width: 500px;
+      margin: 0 auto 2.25rem;
+    }
+
+    p.description span {
+      color: var(--text-warm-light);
+      font-weight: 600;
+    }
+
+    /* Divider Ornamental Line */
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
       margin-bottom: 2rem;
+      opacity: 0.6;
     }
 
-    /* Footer info inside container */
-    .domain-tag {
-      display: inline-block;
-      font-family: 'Outfit', monospace;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.03);
-      padding: 8px 16px;
+    .divider-line {
+      height: 1px;
+      width: 60px;
+      background: linear-gradient(90deg, transparent, var(--gold-warm), transparent);
+    }
+
+    .divider-diamond {
+      width: 6px;
+      height: 6px;
+      background-color: var(--gold-light);
+      transform: rotate(45deg);
+    }
+
+    /* Domain Tag Box */
+    .domain-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--text-warm-muted);
+      background: rgba(18, 10, 7, 0.6);
+      padding: 10px 22px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(217, 119, 6, 0.25);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
     }
 
-    .domain-tag span {
-      color: var(--accent-cyan);
+    .domain-box span {
+      color: var(--gold-light);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
     }
   </style>
 </head>
 <body>
 
-  <div class="bg-light bg-light-1"></div>
-  <div class="bg-light bg-light-2"></div>
-  <div class="bg-light bg-light-3"></div>
+  <!-- Ambient Light Effects -->
+  <div class="glow-light glow-light-1"></div>
+  <div class="glow-light glow-light-2"></div>
+  <div class="wood-lines"></div>
 
+  <!-- Main Wooden Library Card Container -->
   <main class="container">
-    <div class="icon-wrapper">
-      <!-- Book Icon -->
+    <div class="emblem">
+      <!-- Classic Open Book Icon -->
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
       </svg>
     </div>
 
     <div class="badge">
       <span class="badge-dot"></span>
-      Online Knihovna
+      Klasická & Digitální Knihovna
     </div>
 
     <h1>Ahoj čtenáři!</h1>
 
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-diamond"></div>
+      <div class="divider-line"></div>
+    </div>
+
     <p class="description">
-      Vítejte v digitální knihovně. Tato nová stránka byla úspěšně vytvořena a je připravena pro vaše další nápady a rozvoj.
+      Vítejte v útulném zákoutí naší knihovny. Tato nová stránka v elegantním dřevěném stylu je připravena pro vaše knižní příběhy a nápady.
     </p>
 
-    <div class="domain-tag">
+    <div class="domain-box">
       Doména: <span>knihovna.k2ata.cz</span>
     </div>
   </main>
